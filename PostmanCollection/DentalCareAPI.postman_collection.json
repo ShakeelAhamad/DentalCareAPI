@@ -1,0 +1,1195 @@
+{
+  "info": {
+    "_postman_id": "11b2102c-0eab-43ba-a636-813f18eda4f1",
+    "name": "DentalCareAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54842413",
+    "_collection_link": "https://go.postman.co/collection/54842413-11b2102c-0eab-43ba-a636-813f18eda4f1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "AddAdmin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\" : \"admin2\",\r\n    \"email\" : \"admin2@example.com\",\r\n    \"password\":\"123456789\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\" : \"admin@admin.com\",//admin@admin.com//ram@example.com\r\n    \"password\" : \"admin@123\" //admin@123\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RefreshToken",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\" : \"LD7/YntJX4P/nZ0itZr2M2VJe3Kgvat+ElBp7C+W2FFdlaBdOKXQJeQmJD8aQZR16tmkarswpppbit/T+f33dQ==\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/refresh-token",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RevokeToken",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_122w}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\" : \"fUQoZQ3Yx3B0NzADjsrqyF2hafa/L2MJhkQiM0TnFldGwJUf081OgWoBHXCBxZYmYnDNdB5KqeFsO/oURhd34g==\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/revoke-token",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "revoke-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/auth/logout",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dentists",
+          "item": [
+            {
+              "name": "UpdateDentist",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"fullname\" : \"Shakeel Ahamad\",\r\n    \"username\" : \"shakeel\",\r\n    \"email\" : \"shakeel@example.com\",\r\n    \"password\":\"123456789\",\r\n    \"role\" : \"Dentist\",\r\n    \"PhoneNumber\":\"+91 9865342890\",\r\n    \"Qualification\":\"DDS, University of Michigan\",\r\n    \"Specialization\":\"General Dentistry\",\r\n    \"Experience\":\"10\",\r\n    \"ProfileImage\":\"\",\r\n    \"Bio\":\"Dr. Sarah Johnson is a highly experienced general dentist with over 10 years of practice. She specializes in preventive and restorative dentistry.\",\r\n    \"Status\":true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/dentists/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dentists",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetAllDentists",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "IsAvailable",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/dentists?pageNumber=2&pageSize=2",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dentists"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "2"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "AddDentist",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0y39}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"fullname\" : \"Dr. Sarah Johnson\",\r\n    \"username\" : \"sarah\",\r\n    \"email\" : \"sarah@dentalcare.com\",\r\n    \"password\":\"123456789\",\r\n    \"role\" : \"Dentist\",\r\n    \"PhoneNumber\":\"+91 8957489632\",\r\n    \"Qualification\":\"DDS, University of Michigan\",\r\n    \"Specialization\":\"General Dentistry\",\r\n    \"Experience\":\"9\",\r\n    \"ProfileImage\":\"\",\r\n    \"Bio\":\"Dr. Michael Chen is an orthodontic specialist with 15 years of experience transforming smiles with braces and clear aligners.\",\r\n    \"Status\":true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/dentists/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dentists",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteDentist",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/dentists/delete/",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dentists",
+                    "delete",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Service",
+          "item": [
+            {
+              "name": "AddService",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0a2x}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"Name\" : \"Test Service\",\r\n    \"Description\" : \"Evaluation for dental implant candidacy.\",\r\n    \"Duration\" : 60,\r\n    \"Price\" : 150,\r\n    \"Status\" : true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/services/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "services",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "UpdateService",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0a2x}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"Name\" : \"X-Ray\",\r\n    \"Description\" : \"Dental X-rays for accurate diagnosis.\",\r\n    \"Duration\" : 30,\r\n    \"Price\" : 50,\r\n    \"Status\" : true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/services/update/1",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "services",
+                    "update",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteService",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/services/delete/",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "services",
+                    "delete",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetAllService",
+              "request": {
+                "auth": {
+                  "type": "bearer"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/services",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "services"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Appointment",
+          "item": [
+            {
+              "name": "AllAppointments",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_08gg}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/appointments?status=cancelled",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "appointments"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "cancelled"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ViewAppointment",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0p0j}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/appointments/2",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "appointments",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteAppointment",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0huw}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/appointments/delete/3",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "appointments",
+                    "delete",
+                    "3"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "UpdateAppointmentStatus",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0huw}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/admin/appointments/update-status/2?status=Pending",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "appointments",
+                    "update-status",
+                    "2"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "Pending"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Patients",
+          "item": [
+            {
+              "name": "GetAllPatients",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_19vw}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/patients",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "patients"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ViewPatients",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_19vw}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/admin/patients/1",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "patients",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dentists",
+      "item": [
+        {
+          "name": "Treatment",
+          "item": [
+            {
+              "name": "CreateTreatment",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_1a25}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"PatientId\" : 1,\r\n    \"AppointmentId\" : 1,\r\n    \"TreatmentDate\": \"2026-10-07\",\r\n    \"TreatmentDesc\" : \"This Treatment description\",\r\n    \"Diagnosis\" : \"This is New Clinical\",\r\n    \"Notes\" :\"\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/dentist/appointments/2/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "dentist",
+                    "appointments",
+                    "2",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetAllTreatmentByDentistsId",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_1a25}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/dentist/treatments",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "dentist",
+                    "treatments"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ViewTreatment",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_1a25}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/dentist/treatments/1",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "dentist",
+                    "treatments",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "CreateOrUpdate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0o9d}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"DayOfWeek\" : \"Monday\",\r\n    \"StartTime\" : \"09:00\",\r\n    \"EndTime\"   : \"17:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/dentist/schedule",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist",
+                "schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteWorkingHours",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/dentist/delete/19",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist",
+                "delete",
+                "19"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetALLWorkingHours",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kgy}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/dentist",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MyAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0ibj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/dentist/appointments?status=Pending",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist",
+                "appointments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Pending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ViewAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0jr4}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/dentist/appointments/2",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist",
+                "appointments",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ConfirmAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_11qv}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/dentist/appointments/2/status?status=Confirmed",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "dentist",
+                "appointments",
+                "2",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Confirmed"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "GetSolot",
+          "request": {
+            "auth": {
+              "type": "bearer"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/appointment/available-slots",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "appointment",
+                "available-slots"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AddPatient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"fullname\" : \"Sarah Johnson\",\r\n    \"username\" :\"johan\",\r\n    \"email\" : \"johan@paitent.com\",\r\n    \"password\":\"123456789\",\r\n    \"role\" : \"Patient\",\r\n    \"PhoneNumber\":\"+91 8957489632\",\r\n    \"ProfileImage\":\"\",\r\n    \"DateOfBirth\" :\"1996-12-12\",\r\n    \"Gender\" : \"Mail\",\r\n    \"Address\": \"456 Oak Ave, Los Angeles, CA 90001\",\r\n    \"Status\":true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/patient/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "patient",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AddAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0acj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"DentistId\" : 2,\r\n    \"ServiceId\" : 2,\r\n    \"AppointmentDate\" :\"2026-10-06\",\r\n    \"StartTime\" : \"12:45\",\r\n    \"EndTime\" :\"14:00\",\r\n    \"Reason\" : \"\",\r\n    \"Note\" : \"\",\r\n    \"Status\" : \"Pending\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/appointment/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "appointment",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CancelAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0acj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/appointment/1/cancel",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "appointment",
+                "1",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MyAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_13s4}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/patient/appointments?status=cancelled",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "patient",
+                "appointments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "cancelled"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ViewAppointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_025y}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/patient/appointments/1",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "patient",
+                "appointments",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "json_web_token_122w",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0y39",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0a2x",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_16rs",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0yfi",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0o9d",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0kgy",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0acj",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0o6a",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0ibj",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_08gg",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_025y",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_13s4",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0p0j",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0huw",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0jr4",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_11qv",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1a25",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_19vw",
+      "secret": true
+    }
+  ]
+}
