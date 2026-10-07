@@ -10,6 +10,17 @@ When running locally in development mode:
 - HTTP: http://localhost:5103
 - OpenAPI document: https://localhost:7059/openapi/v1.json
 
+## Postman Collection
+
+The Postman collection is available at [`PostmanCollection/DentalCareAPI.postman_collection.json`](./PostmanCollection/DentalCareAPI.postman_collection.json).
+
+To use it:
+
+1. Start the API using `dotnet run`.
+2. In Postman, select **Import** and choose the collection JSON file linked above.
+3. Set the collection or environment variable `baseURL` to `https://localhost:7059/api` (or `http://localhost:5103/api`).
+4. Send the requests from the collection. For protected endpoints, log in first and provide a valid bearer access token.
+
 ## Project Modules
 
 The project is organized into the following API modules:
