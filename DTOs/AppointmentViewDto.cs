@@ -3,6 +3,7 @@
     public class AppointmentViewDto
     {
         public int Id { get; set; }
+        public int PatientId { get; set; }
         public string appointmentDate { get; set; } = string.Empty;
         public string bookedDate { get; set; } = string.Empty;
         public string reason { get; set; } = string.Empty;
@@ -17,11 +18,16 @@
         public string patientAddress { get; set; } = string.Empty;
         public string dentistName { get; set; } = string.Empty;
         public string dentistPhone { get; set; } = string.Empty;
+        public string dentistEmail { get; set; } = string.Empty;
         public string dentistSpecialization { get; set; } = string.Empty;
         public string dentistQualification { get; set; } = string.Empty;
+        public string dentistExperience { get; set; } = string.Empty;
+        public string dentistBio { get; set; } = string.Empty;
         public string serviceName { get; set; } = string.Empty;
         public double servicePrice { get; set; }
         public int serviceDuration { get; set; }
         public string status { get; set; } = string.Empty;
+        // Treatment object
+        public TreatmentViewDto? Treatment { get; set; }
     }
 }

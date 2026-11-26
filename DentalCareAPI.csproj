@@ -17,4 +17,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\dentists\" />
+    <Folder Include="wwwroot\uploads\patitent\" />
+  </ItemGroup>
+
 </Project>

@@ -18,7 +18,7 @@ namespace DentalCareAPI.Repositories
         /// Gets role by rolename 
         /// Used id : AuthService.LoginAsync()
         /// Internally uses : base.CreateDentistAsync
-        /// </summary> 
+        /// </summary>  
         Task<Role?> GetRoleByNameAsync(string roleName);
     }
 }

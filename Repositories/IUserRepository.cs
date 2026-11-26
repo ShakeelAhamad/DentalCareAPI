@@ -13,7 +13,7 @@ namespace DentalCareAPI.Repositories
     {
         //----------------------------------------------------------
         //USER-SPECIFIC QUERIES
-        //These are additional to what IRepository<User> provides
+        //These are additional to what IRepository<User> provides 
         //----------------------------------------------------------
 
         /// <summary>

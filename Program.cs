@@ -10,6 +10,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactLocal", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 
 // Add services to the container.
 
@@ -164,6 +176,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+// Enable CORS before authentication and authorization.
+app.UseCors("ReactLocal");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

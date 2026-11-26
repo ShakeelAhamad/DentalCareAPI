@@ -10,6 +10,7 @@ namespace DentalCareAPI.Services
         Task<TreatmentResponseDto> CreateTreatmentAsync(TreatmentDto treatmentDto, int userId);
         Task<PaginatedResponseDto<TreatmentResponseDto>> GetAllTreatmentsAsync(int userId, int pageNumber = 1, int? pageSize = null);
         Task<TreatmentResponseDto?> GetTreatmentByIdAsync(int treatmentId);
+
     }
 }
    

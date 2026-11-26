@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace DentalCareAPI.Repositories
-{
+{ 
     /// <summary>
     /// Generic repository implementation.
     /// All specific repositories (UserRepository, RefreshTokenRepository)

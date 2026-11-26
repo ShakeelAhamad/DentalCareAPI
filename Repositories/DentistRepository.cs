@@ -27,11 +27,11 @@ namespace DentalCareAPI.Repositories
         ///Gets Dentist by userId
         ///Uses base : FirstOrDefaultAsync() with case-insensitive comparison.
         /// </summary>
-        public async Task<Dentist?> GetDentistByIdAsync(int userId)
+        public async Task<Dentist?> GetDentistByIdAsync(int Id)
         {
             //Include role because AuthService needs user.Role.Name for JWT claims
             return await _dbSet
-                  .FirstOrDefaultAsync(d => d.UserId == userId);
+                  .FirstOrDefaultAsync(d => d.Id == Id);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace DentalCareAPI.Repositories
         /// </summary>
 
         public async Task<Dentist?> GetDentistByUserIdAsync(int userId)
-        {
+        { 
             // Both conditions required:
             // d.UserId == userId → ensure it belongs to the requesting user
             // If either fails, returns null → controller returns 404

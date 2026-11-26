@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DentalCareAPI.Controllers
 {
@@ -13,12 +14,15 @@ namespace DentalCareAPI.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
+        private readonly IWebHostEnvironment _environment;
         private readonly IPatientService _patientService;
         private readonly IAppointmentService _appointmentService;
-        public PatientController(IPatientService patientService, IAppointmentService appointmentService)
+
+        public PatientController(IPatientService patientService, IAppointmentService appointmentService, IWebHostEnvironment environment)
         {
             _patientService = patientService;
             _appointmentService = appointmentService;
+            _environment = environment;
         }
         //POST : api/patient/create - create patients
         [HttpPost("create")]
@@ -26,6 +30,18 @@ namespace DentalCareAPI.Controllers
         {
             try
             {
+                if (patientDto.ProfileImageFile is { Length: > 0 } imageFile)
+                {
+                    var imagePath = await UploadProfileImageAsync(
+                        imageFile,
+                        "patitent"
+                    );
+
+                    if (!string.IsNullOrWhiteSpace(imagePath))
+                    {
+                        patientDto.ProfileImage = imagePath;
+                    }
+                }
                 var patient = await _patientService.CreatePatientAsync(patientDto);
                 return CreatedAtAction(
                     nameof(CreatePatient),
@@ -36,7 +52,7 @@ namespace DentalCareAPI.Controllers
                     new
                     {
                         success = true,
-                        message = "Patient added successfully.",
+                        message = "Account created successfully!",
                         data = patient
                     }
                 );
@@ -102,6 +118,64 @@ namespace DentalCareAPI.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred while retrieving the appointment", details = ex.Message });
             }
+        }
+
+        //GET : api/patient/getTreatments - get all treatments for the current patient
+        [Authorize(Policy = "PatientOnly")]
+        [HttpGet("getTreatments")]
+        public async Task<IActionResult> GetTreatments()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var treatments = await _patientService.GetTreatmentsAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Treatments retrieved successfully.",
+                    data = treatments
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred while retrieving the treatments", details = ex.Message });
+            }
+        }
+
+        private async Task<string?> UploadProfileImageAsync(IFormFile? file, string folderName = "profiles")
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+                throw new InvalidOperationException(
+                    "Only JPG, JPEG, PNG and WEBP images are allowed.");
+
+            if (file.Length > 2 * 1024 * 1024)
+                throw new InvalidOperationException(
+                    "Image size must not exceed 2 MB.");
+
+            var webRoot = _environment.WebRootPath
+                ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
+
+            var uploadFolder = Path.Combine(
+                webRoot,
+                "uploads",
+                folderName
+            );
+
+            Directory.CreateDirectory(uploadFolder);
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(uploadFolder, fileName);
+
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return $"/uploads/{folderName}/{fileName}";
         }
     }
 }

@@ -11,5 +11,7 @@ namespace DentalCareAPI.Services
         Task<AppointmentViewDto?> GetAppointmentByIdAsync(int appointmentId);
         Task<bool> DeleteAnyAppointmentAsync(int Id);//Delete any appointment
         Task<string> UpdateAppointmentStatusAsync(int appointmentId, string status);
+        Task<DentistAppointmentStatsDto> GetAppointmentStatsAsync(int userId);
+        Task<DashboardStatsDto> GetDashboardStatsAsync();
     }
 }

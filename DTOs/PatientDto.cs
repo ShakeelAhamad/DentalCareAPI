@@ -23,8 +23,9 @@ namespace DentalCareAPI.DTOs
         public DateTime DateOfBirth {get; set;}
         public string Gender {get; set;} = string.Empty;
         public string Address { get; set;} = string.Empty;
+        public IFormFile? ProfileImageFile { get; set; }
         public string ProfileImage {get; set;} = string.Empty;
-        public bool Status { get; set; }
+        public bool Status { get; set; } 
     }
 
 }

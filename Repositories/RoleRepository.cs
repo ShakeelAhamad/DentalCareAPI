@@ -9,7 +9,7 @@ namespace DentalCareAPI.Repositories
         public RoleRepository(ApplicationDbContext context) : base(context)
         {
             
-        }
+        } 
 
         //--------------------------------------------------
         //ROLE-SPECIFIC IMPLEMENTATIONS

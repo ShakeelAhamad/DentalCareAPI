@@ -77,6 +77,13 @@ namespace DentalCareAPI.Data
                 .WithMany()
                 .HasForeignKey(t => t.AppointmentId);
 
+            modelBuilder.Entity<Treatment>()
+                .HasOne(t => t.Appointment)
+                .WithOne(a => a.Treatment);
+            modelBuilder.Entity<Treatment>()
+                .HasIndex(t => t.AppointmentId)
+                .IsUnique();
+
             //Configure Appointment - Patient relationship
             modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Patient)

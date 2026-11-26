@@ -11,7 +11,7 @@ namespace DentalCareAPI.Repositories
     public interface IRepository<T> where T : class
     {
         //------------------------------------------------
-        //QUERY METHODS
+        //QUERY METHODS 
         //Used as building block in specific repositories
         //------------------------------------------------
 

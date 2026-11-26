@@ -1,4 +1,5 @@
-﻿using DentalCareAPI.Models;
+﻿using DentalCareAPI.DTOs;
+using DentalCareAPI.Models;
 
 namespace DentalCareAPI.Repositories
 {
@@ -13,6 +14,8 @@ namespace DentalCareAPI.Repositories
         IQueryable<Appointment> GetAppointmentByPatientId(int patientId);
         Task<bool> HasConflictAsync(int dentistId,DateOnly appointmentDate,TimeOnly startTime,TimeOnly endTime);
         IQueryable<Appointment> GetAllAppointmentsAsync(int? patientId,int? dentistId, string? status);
+        Task<DentistAppointmentStatsDto> GetAppointmentStatsAsync(int dentistId);
+        Task<DashboardStatsDto> GetDashboardStatsAsync();
 
     }
 }

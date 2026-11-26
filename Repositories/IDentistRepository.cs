@@ -21,7 +21,7 @@ namespace DentalCareAPI.Repositories
         /// Used id : AuthService.LoginAsync()
         /// Internally Dentist : base.FirstOrDefaultAsync
         /// </summary>
-        Task<Dentist?> GetDentistByIdAsync(int userId);
+        Task<Dentist?> GetDentistByIdAsync(int Id);
         Task<Dentist?> GetDentistByUserIdAsync(int userId);
         IQueryable<Dentist> GetAllDentistsAsync();
     }

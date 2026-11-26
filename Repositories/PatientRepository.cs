@@ -19,7 +19,7 @@ namespace DentalCareAPI.Repositories
         }
 
         //--------------------------------------------------
-        //PATIENT-SPECIFIC IMPLEMENTATIONS
+        //PATIENT-SPECIFIC IMPLEMENTATIONS 
         //These use base class methods as building blocks
         //--------------------------------------------------
         ///<summary>
@@ -63,7 +63,8 @@ namespace DentalCareAPI.Repositories
                            ProfileImage       = p.ProfileImage,
                            Status             = p.Status,
                            AppointmentCount   = _context.Appointments.Count(a => a.PatientId == p.Id),
-                           TreatmentCount     = _context.Treatments.Count(t => t.PatientId == p.Id)
+                           TreatmentCount     = _context.Treatments.Count(t => t.PatientId == p.Id),
+                           CreatedAt          = p.CreatedAt
                        });
         }
     }

@@ -59,7 +59,7 @@ namespace DentalCareAPI.Services
             var dateOfBirth = patientDto.DateOfBirth;
 
             // Optional: validate it's not the default value
-            if (dateOfBirth == default(DateTime))
+            if (dateOfBirth == default(DateTime)) 
             {
                 throw new InvalidOperationException("Date of birth must be provided.");
             }
@@ -110,7 +110,7 @@ namespace DentalCareAPI.Services
             catch (Exception ex)
             {
                 throw new InvalidOperationException($"Patient creation failed: {ex.InnerException?.Message ?? ex.Message}", ex);
-            }
+            }  
 
             //Return response dto
             return new PatientResponseDto
@@ -182,6 +182,7 @@ namespace DentalCareAPI.Services
             {
                 throw new KeyNotFoundException($"Patient with ID {patientId} not found.");
             }
+            
             var Appointments = _appointmentRepository.GetAppointmentByPatientId(patientId);
             var Treatments   = _treatmentRepository.GetTreatmentByPatientIdAsync(patientId);
             // Execute queries
@@ -241,7 +242,41 @@ namespace DentalCareAPI.Services
                     TreatmentDesc          = t.TreatmentDesc ?? "",
                     Diagnosis              = t.Diagnosis ?? "",
                 }).ToList() ?? new List<TreatmentResponseDto>(),
-                TreatmentCount = treatmentList.Count
+                TreatmentCount = treatmentList.Count,
+                CreatedAt      = patient.CreatedAt
+            };
+        }
+
+        public async Task<PaginatedResponseDto<TreatmentResponseDto>> GetTreatmentsAsync(int userId)
+        {
+            var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
+            if (patient == null)
+            {
+                throw new KeyNotFoundException($"Patient with User ID {userId} not found.");
+            }
+            var query = _treatmentRepository.GetTreatmentByPatientIdAsync(patient.Id);
+            var treatments = await query.ToListAsync();
+            return new PaginatedResponseDto<TreatmentResponseDto>
+            {
+                PageNumber = 1,
+                PageSize = treatments.Count,
+                TotalRecords = treatments.Count,
+                TotalPages = 1,
+                Data = treatments.Select(t => new TreatmentResponseDto
+                {
+                    Id = t.Id,
+                    appointmentId = t.AppointmentId,
+                    AppointmentStatus = t.Appointment?.Status ?? "",
+                    PatientName = t.Patient?.FullName ?? "",
+                    PatientPhoneNumber = t.Patient?.PhoneNumber ?? "",
+                    DentistName = t.Dentist?.FullName ?? "",
+                    DentistPhoneNumber = t.Dentist?.PhoneNumber ?? "",
+                    DentistQualification = t.Dentist?.Qualification ?? "",
+                    DentistSpecialization = t.Dentist?.Specialization ?? "",
+                    TreatmentDate = t.TreatmentDate.ToString("MMMM dd, yyyy"),
+                    TreatmentDesc = t.TreatmentDesc ?? "",
+                    Diagnosis = t.Diagnosis ?? "",
+                }).ToList()
             };
         }
     }

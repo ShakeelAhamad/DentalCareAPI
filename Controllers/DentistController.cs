@@ -143,7 +143,7 @@ namespace DentalCareAPI.Controllers
         {
             try
             {
-                var userId = User.GetUserId();
+                var userId      = User.GetUserId();
                 var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
                 if (appointment == null)
                 {
@@ -153,7 +153,7 @@ namespace DentalCareAPI.Controllers
                 {
                     success = true,
                     message = "Appointment retrieved successfully.",
-                    data = appointment
+                    data    = appointment
                 });
             }
             catch (Exception ex)
@@ -246,6 +246,23 @@ namespace DentalCareAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An error occurred while retrieving the treatment", details = ex.Message });
+            }
+        }
+
+        //GET  : api/dentist/appointments/stats - get appointment stats for dentist
+        [Authorize(Policy = "DentistOnly")]
+        [HttpGet("appointments/stats")]
+        public async Task<IActionResult> GetAppointmentStats()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var stats = await _appointmentService.GetAppointmentStatsAsync(userId);
+                return Ok(new { success = true, message = "Appointment stats retrieved successfully.", data = stats });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred while retrieving appointment stats", details = ex.Message });
             }
         }
 

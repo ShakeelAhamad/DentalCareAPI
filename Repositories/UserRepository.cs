@@ -28,7 +28,7 @@ namespace DentalCareAPI.Repositories
         }
 
         //--------------------------------------------------
-        //USER-SPECIFIC IMPLEMENTATIONS
+        //USER-SPECIFIC IMPLEMENTATIONS 
         //These use base class methods as building blocks
         //--------------------------------------------------
 
@@ -77,7 +77,7 @@ namespace DentalCareAPI.Repositories
             //Include Role because we need user.Role.Name in UserResponseDto
             return await _dbSet
                         .Include(u => u.Role)
-                        .Include(u => u.Dentist)
+                        .Include(u => u.Dentist) 
                         .Include(u => u.Patient)
                         .FirstOrDefaultAsync(u => u.Id == userId);
         }

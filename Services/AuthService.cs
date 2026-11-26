@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace DentalCareAPI.Services
+namespace DentalCareAPI.Services 
 {
     public class AuthService : IAuthService
     {
@@ -91,7 +91,7 @@ namespace DentalCareAPI.Services
         }
         public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string ipAddress)
         {
-            //Get User by Email
+            //Get User by Email 
             var user = await _userRepository.GetByEmailAsync(loginDto.Email);
             //If Check User Exists
             if (user == null)
@@ -133,11 +133,11 @@ namespace DentalCareAPI.Services
             }
             else if (user.Role.Name.ToLower() == RoleConstants.Dentist.ToLower())
             {
-                var dentist = await _dentistRepository.GetDentistByIdAsync(user.Id);
+                var dentist = await _dentistRepository.GetDentistByUserIdAsync(user.Id);
                 if (dentist != null)
                 {
                     FullName = dentist.FullName;
-                    Profile = dentist.ProfileImage;
+                    Profile  = dentist.ProfileImage;
                 }
             }
 
@@ -286,6 +286,108 @@ namespace DentalCareAPI.Services
                 CreatedByIp = ipAddress
             };
 
+        }
+        public async Task<(bool Status, string Message)> UpdatePasswordAsync(int userId,ChangePasswordDto dto)
+        {
+            try
+            {
+                // Get logged-in user
+                var user = await _userRepository.GetUserByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return (false, "User not found.");
+                }
+
+                // Verify current password
+                bool isCurrentPasswordValid = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword,user.PasswordHash);
+
+                if (!isCurrentPasswordValid)
+                {
+                    return (false, "Current password is incorrect.");
+                }
+
+                // Check new password is different
+                if (BCrypt.Net.BCrypt.Verify(dto.NewPassword,user.PasswordHash))
+                {
+                    return (false,"New password must be different from current password.");
+                }
+
+                // Hash new password
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+                // Update user
+                _userRepository.Update(user);
+
+                await _userRepository.SaveChangesAsync();
+
+                return (true, "Password updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, "Failed to update password: " + ex.Message);
+            }
+        }
+
+        public async Task<ProfileDto?> ProfileAsync(int userId)
+        {
+            // Get user with Role, Dentist and Patient
+            var user = await _userRepository.GetUserWithRoleAsync(userId);
+
+            if (user == null)
+                return null;
+
+            // Get Profile Image based on Role
+            string? profileImage =
+                user.Dentist?.ProfileImage ??
+                user.Patient?.ProfileImage ??
+                string.Empty;
+            string? phoneNumber =
+                user.Dentist?.PhoneNumber ??
+                user.Patient?.PhoneNumber ??
+                "+91 9005607897";
+
+
+
+            var profile = new ProfileDto
+            {
+                UserId    = user.Id,
+                DentistId = user.Dentist?.Id ?? 0,
+                PatientId = user.Patient?.Id ?? 0,
+                Username  = user.Username ?? string.Empty,
+                Email     = user.Email ?? string.Empty,
+                Role      = user.Role?.Name ?? string.Empty,
+                Status    = user.Status,
+                joinedDate = user.CreatedAt.ToString("yyyy-MM-dd"),
+                ProfileImage = profileImage,
+                PhoneNumber  = phoneNumber,
+
+                // Dentist Object
+                Dentist = user.Dentist == null ? null : new DentistProfileDto
+                {
+                    DentistId       = user.Dentist.Id,
+                    FullName        = user.Dentist.FullName,
+                    PhoneNumber     = user.Dentist.PhoneNumber,
+                    Qualification   = user.Dentist.Qualification,
+                    Specialization  = user.Dentist.Specialization,
+                    Experience      = user.Dentist.Experience,
+                    ProfileImage    = user.Dentist.ProfileImage,
+                    Bio             = user.Dentist.Bio
+                },
+                // Patient Object
+                Patient = user.Patient == null ? null : new PatientProfileDto
+                {
+                    PatientId     = user.Patient.Id,
+                    FirstName     = user.Patient.FullName,
+                    PhoneNumber   = user.Patient.PhoneNumber,
+                    DateOfBirth   = user.Patient.DateOfBirth.ToString("dd MMM, yyyy"),
+                    Gender        = user.Patient.Gender,
+                    Address       = user.Patient.Address,
+                    ProfileImage  = user.Patient.ProfileImage
+                }
+            };
+
+            return profile;
         }
     }
 }

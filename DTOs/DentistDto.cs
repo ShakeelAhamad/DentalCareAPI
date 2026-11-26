@@ -22,6 +22,7 @@ namespace DentalCareAPI.DTOs
         public string Qualification { get; set; } = string.Empty;
         public string Specialization { get; set; } = string.Empty;
         public string Experience { get; set; } = string.Empty;
+        public IFormFile? ProfileImageFile { get; set; }
         public string ProfileImage { get; set; } = string.Empty;
         public string Bio { get; set; } = string.Empty;
         public bool Status {get; set;}

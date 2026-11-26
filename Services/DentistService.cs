@@ -2,6 +2,7 @@
 using DentalCareAPI.Models;
 using DentalCareAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
 
 namespace DentalCareAPI.Services
 {
@@ -10,19 +11,21 @@ namespace DentalCareAPI.Services
         private readonly IWorkHourRepository _workHourRepository; 
         private readonly IDentistRepository _dentistRepository;
         private readonly ITreatmentRepository _treatmentRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly IConfiguration _configuration; 
 
-        public DentistService(IDentistRepository dentistRepository, ITreatmentRepository treatmentRepository,IWorkHourRepository workHourRepository, IConfiguration configuration)
+        public DentistService(IDentistRepository dentistRepository, ITreatmentRepository treatmentRepository,IWorkHourRepository workHourRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration)
         {
              _dentistRepository = dentistRepository;
              _workHourRepository = workHourRepository;
             _treatmentRepository = treatmentRepository;
+            _appointmentRepository = appointmentRepository;
             _configuration = configuration;
         } 
 
         public async Task<WorkingHourResponseDto> CreateWorkingHoursAsync(WorkingHourDto workHourDto, int userId)
         {
-            var dentist = await _dentistRepository.GetDentistByIdAsync(userId);
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
             if(dentist == null)
             {
                 throw new Exception("Dentist not found.");
@@ -91,7 +94,7 @@ namespace DentalCareAPI.Services
                 pageNumber = 1;
             } 
           
-            var dentist = await _dentistRepository.GetDentistByIdAsync(userId);
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
             if (dentist == null)
             {
                 throw new Exception("Dentist not found.");
@@ -151,10 +154,15 @@ namespace DentalCareAPI.Services
         //Create Treatment
         public async Task<TreatmentResponseDto> CreateTreatmentAsync(TreatmentDto treatmentDto, int userId)
         {
-            var dentist = await _dentistRepository.GetDentistByIdAsync(userId);
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
             if (dentist == null)
             {
                 throw new Exception("Dentist not found.");
+            }
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(treatmentDto.AppointmentId);
+            if (appointment == null)
+            {
+                throw new KeyNotFoundException("Appointment not found.");
             }
             int DentistId = dentist.Id;
             var treatment = new Treatment
@@ -171,6 +179,11 @@ namespace DentalCareAPI.Services
             };
             await _treatmentRepository.AddAsync(treatment);
             await _treatmentRepository.SaveChangesAsync();
+            
+            appointment.Status = "Completed";
+            _appointmentRepository.Update(appointment);
+            await _appointmentRepository.SaveChangesAsync();
+
             var createdTreatment = await _treatmentRepository.GetTreatmentByIdAsync(treatment.Id);
             return new TreatmentResponseDto
             {
@@ -196,8 +209,8 @@ namespace DentalCareAPI.Services
             {
                 pageNumber = 1;
             }
-            var dentist = await _dentistRepository.GetDentistByIdAsync(userId);
-            if (dentist == null)
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
+            if (dentist == null) 
             {
                 throw new Exception("Dentist not found.");
             }

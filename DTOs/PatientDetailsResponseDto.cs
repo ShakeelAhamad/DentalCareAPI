@@ -18,5 +18,6 @@
 
         public int TreatmentCount { get; set; }
         public List<TreatmentResponseDto> Treatments { get; set; } = new();
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace DentalCareAPI.Models
         public int ServiceId { get; set; }
         public Patient? Patient { get; set; }
         public Dentist? Dentist { get; set; }
+        public Treatment? Treatment { get; set; }
         public Service? Service { get; set; }
 
         public DateTime AppointmentDate { get; set; }   

@@ -115,10 +115,50 @@ namespace DentalCareAPI.Services
             };
         }
 
-        public async Task<DentistResponseDto?> UpdateDentistAsync(int userId, UpdateDentistDto updateDentist)
+        public async Task<DentistResponseDto?> GetDentistByIdAsync(int Id)
         {
             //Find the dentist by userId
-            var dentist  = await _dentistRepository.GetDentistByUserIdAsync(userId);
+            var dentist = await _dentistRepository.GetDentistByIdAsync(Id);
+            if (dentist == null)
+            {
+                return null; // Dentist not found 
+            }
+            int userId = dentist.UserId;
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null || dentist == null)
+            {
+                return null; // Dentist not found 
+            }
+
+            //Return response dto
+            return new DentistResponseDto
+            {
+                Id = dentist.Id,
+                FullName = dentist.FullName,
+                Username = user.Username,
+                Email = user.Email,
+                PhoneNumber = dentist.PhoneNumber,
+                Qualification = dentist.Qualification,
+                Specialization = dentist.Specialization,
+                Experience = dentist.Experience,
+                ProfileImage = dentist.ProfileImage,
+                Bio = dentist.Bio,
+                Status = dentist.Status,
+                Role = RoleConstants.Dentist,
+                CreatedAt = dentist.CreatedAt,
+                UpdatedAt = dentist.UpdatedAt
+            };
+        }
+
+        public async Task<DentistResponseDto?> UpdateDentistAsync(int Id, UpdateDentistDto updateDentist)
+        {
+            //Find the dentist by userId
+            var dentist  = await _dentistRepository.GetDentistByIdAsync(Id);
+            if (dentist == null)
+            {
+                return null; // Dentist not found 
+            }
+            int userId = dentist.UserId;
             var user     = await _userRepository.GetUserByIdAsync(userId);
             if(user == null || dentist == null)
             {
@@ -416,7 +456,7 @@ namespace DentalCareAPI.Services
                 Description = s.Description,
                 Duration = s.Duration,
                 Price = s.Price,
-                Status = s.Status,
+                Status    = s.Status,
                 CreatedAt = s.CreatedAt,
                 UpdatedAt = s.UpdatedAt
             }).ToList();
@@ -433,6 +473,29 @@ namespace DentalCareAPI.Services
                 PageSize = pageSize ?? 0,
                 TotalRecords = totalRecords,
                 TotalPages = totalPages
+            };
+        }
+
+        public async Task<ServiceResponseDto?> GetServiceByIdAsync(int Id)
+        {
+            //Find the service by Id
+            var service = await _servicesRepository.GetServicesByIdAsync(Id);
+            if (service == null)
+            {
+                return null; // Service not found 
+            }
+
+            //Return response dto
+            return new ServiceResponseDto
+            {
+                Id = service.Id,
+                Name = service.Name,
+                Description = service.Description,
+                Duration = service.Duration,
+                Price = service.Price,
+                Status = service.Status,
+                CreatedAt = service.CreatedAt,
+                UpdatedAt = service.UpdatedAt
             };
         }
     }

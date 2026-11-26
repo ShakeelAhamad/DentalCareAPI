@@ -2,6 +2,7 @@
 using DentalCareAPI.Models;
 using DentalCareAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DentalCareAPI.Services
@@ -301,7 +302,7 @@ namespace DentalCareAPI.Services
             }
             int? patientId = null;
             int? dentistId = null;
-            var dentist = await _dentistRepository.GetDentistByIdAsync(userId);
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
             var patient = await _patientRepository.GetPatientByUserIdAsync(userId);
             //if (dentist == null || patient == null)
             //{
@@ -376,6 +377,7 @@ namespace DentalCareAPI.Services
             return new AppointmentViewDto
             {
                 Id = appointment.Id,
+                PatientId = appointment.PatientId,
                 appointmentDate = appointment.AppointmentDate.ToString("dddd, MMMM dd, yyyy"),
                 bookedDate = appointment.CreatedAt.ToString("MMM dd, yyyy"),
                 reason = appointment.Reason,
@@ -390,12 +392,37 @@ namespace DentalCareAPI.Services
                 patientAddress = appointment.Patient?.Address ?? "",
                 dentistName = appointment.Dentist?.FullName ?? "",
                 dentistPhone = appointment.Dentist?.PhoneNumber ?? "",
+                dentistEmail = appointment.Dentist?.User?.Email ?? "",
                 dentistSpecialization = appointment.Dentist?.Specialization ?? "",
                 dentistQualification = appointment.Dentist?.Qualification ?? "",
+                dentistExperience = appointment.Dentist?.Experience ?? "",
+                dentistBio = appointment.Dentist?.Bio ?? "",
                 serviceName = appointment.Service?.Name ?? "",
                 servicePrice = appointment.Service?.Price ?? 0,
                 serviceDuration = appointment.Service?.Duration ?? 0,
-                status = appointment.Status
+                status = appointment.Status,
+                Treatment = appointment.Treatment == null ? null : new TreatmentViewDto
+                {
+                    Id                     = appointment.Treatment.Id,
+                    PatientId              = appointment.Treatment.PatientId,
+                    DentistId              = appointment.Treatment.DentistId,
+                    AppointmentId          = appointment.Treatment.AppointmentId,
+                    PatientName            = appointment.Treatment?.Patient?.FullName ?? "",
+                    PatientEmail           = appointment.Treatment?.Patient?.User?.Email ?? "",
+                    PatientPhone           = appointment.Treatment?.Patient?.PhoneNumber ?? "",
+                    PatientDob             = appointment.Treatment?.Patient?.DateOfBirth,
+                    PatientGender          = appointment.Treatment?.Patient?.Gender ?? "",
+                    PatientAddress         = appointment.Treatment?.Patient?.Address ?? "",
+                    PatientProfileImage    = appointment.Treatment?.Patient?.ProfileImage ?? "",
+                    AppointmentStatus      = appointment.Status ?? "",
+                    TreatmentDesc          = appointment.Treatment?.TreatmentDesc ?? "",
+                    Diagnosis              = appointment.Treatment?.Diagnosis ?? "",
+                    Notes                  = appointment.Treatment?.Notes ?? "",
+                    TreatmentDate          = appointment.Treatment?.TreatmentDate,
+                    CreatedAt              = appointment.Treatment?.CreatedAt,
+                    UpdatedAt              = appointment.Treatment?.UpdatedAt
+                }
+
             };
         }
 
@@ -424,6 +451,12 @@ namespace DentalCareAPI.Services
             {
                 throw new KeyNotFoundException("Appointment not found.");
             }
+           
+            // Capitalize first character
+            status = string.IsNullOrWhiteSpace(status)
+                ? string.Empty
+                : char.ToUpper(status.Trim()[0]) +
+                  status.Trim().Substring(1).ToLower();
             // Validate status
             var validStatuses = new List<string> { "Pending", "Confirmed", "Completed", "Cancelled" };
             if (!validStatuses.Contains(status))
@@ -434,7 +467,23 @@ namespace DentalCareAPI.Services
             _appointmentRepository.Update(appointment);
             await _appointmentRepository.SaveChangesAsync();
             return $"Appointment status updated to {status}.";
-        }   
+        }
+
+        public async Task<DentistAppointmentStatsDto> GetAppointmentStatsAsync(int userId)
+        {
+            var dentist = await _dentistRepository.GetDentistByUserIdAsync(userId);
+            if (dentist == null)
+            {
+                throw new InvalidOperationException("Dentist profile not found.");
+            }
+            int dentistId = dentist.Id;
+            return await _appointmentRepository.GetAppointmentStatsAsync(dentistId);
+        }
+
+        public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+        {
+            return await _appointmentRepository.GetDashboardStatsAsync();
+        }
     }
 }
- 
+  

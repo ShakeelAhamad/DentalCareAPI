@@ -25,9 +25,7 @@ namespace DentalCareAPI.Controllers
         {
             try
             {
-                var result =
-                await _appointmentService
-                    .GetAvailableSlotsAsync(request);
+                var result = await _appointmentService.GetAvailableSlotsAsync(request);
                 return Ok(new
                 {
                     success = true,
@@ -100,6 +98,8 @@ namespace DentalCareAPI.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred while creating the appointment.", details = ex.Message });
             }
         }
+
+        //GET : api/
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using DentalCareAPI.DTOs;
+using DentalCareAPI.Extensions;
 using DentalCareAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -62,55 +63,24 @@ namespace DentalCareAPI.Controllers
         {
             try
             {
-                // Get refresh token from HttpOnly cookie
                 var refreshToken = Request.Cookies["refreshToken"];
 
-                if (string.IsNullOrEmpty(refreshToken))
+                if (!string.IsNullOrEmpty(refreshToken))
                 {
-                    return BadRequest(new
-                    {
-                        message = "Refresh token not found."
-                    });
+                    var ipAddress = GetIpAddress();
+
+                    await _authService.RevokeTokenAsync(
+                        refreshToken,
+                        ipAddress
+                    );
                 }
 
-                var ipAddress = GetIpAddress();
-
-                // Revoke refresh token in database
-                var success = await _authService.RevokeTokenAsync(
-                    refreshToken,
-                    ipAddress
-                );
-
-                // Remove refresh token cookie
-                Response.Cookies.Delete(
-                    "refreshToken",
-                    new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict,
-                        Path = "/api/auth/refresh-token"
-                    }
-                );
-
-                if (!success)
-                {
-                    return BadRequest(new
-                    {
-                        message = "Token is invalid or already revoked."
-                    });
-                }
+                DeleteRefreshTokenCookie();
 
                 return Ok(new
                 {
+                    success = true,
                     message = "Logout successful."
-                });
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new
-                {
-                    message = ex.Message
                 });
             }
             catch (Exception ex)
@@ -121,6 +91,68 @@ namespace DentalCareAPI.Controllers
                     details = ex.Message
                 });
             }
+
+            //try
+            //{
+            //    // Get refresh token from HttpOnly cookie
+            //    var refreshToken = Request.Cookies["refreshToken"];
+
+            //    if (string.IsNullOrEmpty(refreshToken))
+            //    {
+            //        return BadRequest(new
+            //        {
+            //            message = "Refresh token not found."
+            //        });
+            //    }
+
+            //    var ipAddress = GetIpAddress();
+
+            //    // Revoke refresh token in database
+            //    var success = await _authService.RevokeTokenAsync(
+            //        refreshToken,
+            //        ipAddress
+            //    );
+
+            //    // Remove refresh token cookie
+            //    Response.Cookies.Delete(
+            //        "refreshToken",
+            //        new CookieOptions
+            //        {
+            //            HttpOnly = true,
+            //            Secure = true,
+            //            SameSite = SameSiteMode.Strict,
+            //            Path = "/api/auth/refresh-token"
+            //        }
+            //    );
+
+            //    if (!success)
+            //    {
+            //        return BadRequest(new
+            //        {
+            //            message = "Token is invalid or already revoked."
+            //        });
+            //    }
+
+            //    return Ok(new
+            //    {
+            //        message = "Logout successful."
+            //    });
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return Unauthorized(new
+            //    {
+            //        message = ex.Message
+            //    });
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, new
+            //    {
+            //        message = "An error occurred during logout.",
+            //        details = ex.Message
+            //    });
+            //}
         }
 
         [HttpPost("refresh-token")]
@@ -128,19 +160,58 @@ namespace DentalCareAPI.Controllers
         {
             try
             {
+                //var refreshToken = Request.Cookies["refreshToken"];
+                var refreshToken = request.RefreshToken;
+
+                if (string.IsNullOrWhiteSpace(refreshToken))
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Refresh token not found."
+                    });
+                }
+
                 var ipAddress = GetIpAddress();
-                var response  = await _authService.RefreshTokenAsync(request.RefreshToken,ipAddress);
-                SetRefreshTokenCookie(response.RefreshToken);//Optional : update cookie
+
+                var response = await _authService.RefreshTokenAsync(
+                    refreshToken,
+                    ipAddress
+                );
+
+                SetRefreshTokenCookie(response.RefreshToken);
+
                 return Ok(response);
             }
             catch (UnauthorizedAccessException ex)
             {
+                DeleteRefreshTokenCookie();
+
                 return Unauthorized(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred during login", details = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "An error occurred during token refresh.",
+                    details = ex.Message
+                });
             }
+
+            //try
+            //{
+            //    var ipAddress = GetIpAddress();
+            //    var response  = await _authService.RefreshTokenAsync(request.RefreshToken,ipAddress);
+            //    SetRefreshTokenCookie(response.RefreshToken);//Optional : update cookie
+            //    return Ok(response);
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return Unauthorized(new { message = ex.Message });
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, new { message = "An error occurred during login", details = ex.Message });
+            //}
         }
 
         [HttpPost("revoke-token")]
@@ -168,6 +239,35 @@ namespace DentalCareAPI.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] ChangePasswordDto dto)
+        {
+            // Get logged-in user ID from JWT
+            int userId = User.GetUserId();
+            var result = await _authService.UpdatePasswordAsync(userId,dto);
+            if (!result.Status)
+            {
+                return BadRequest(new{success = false,message = result.Message});
+            }
+            return Ok(new{success = true,message = result.Message});
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> Profile() 
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var profile = await _authService.ProfileAsync(userId);
+                return Ok(new { success = true, message = "Profile data retrieved successfully.", data = profile });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred while retrieving profile data", details = ex.Message });
+            }
+        }
         private string GetIpAddress()
         {
             //Get Ip Address from request
@@ -190,5 +290,16 @@ namespace DentalCareAPI.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
+        private void DeleteRefreshTokenCookie()
+        {
+            Response.Cookies.Delete("refreshToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/auth/refresh-token"
+            });
+        }
+
     }
 }
